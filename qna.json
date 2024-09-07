@@ -1,0 +1,61 @@
+[
+  {
+    "id": "1",
+    "question": {
+      "en": "What is your name?"
+    },
+    "answer": {
+      "en": "I am a chatbot created by Zynex Solutions."
+    },
+    "category": "General",
+    "tags": ["name", "about"],
+    "related_questions": ["2", "4"]
+  },
+  {
+    "id": "2",
+    "question": {
+      "en": "What services do you offer?"
+    },
+    "answer": {
+      "en": "We provide web development and digital marketing services."
+    },
+    "category": "Services",
+    "tags": ["services", "offerings"],
+    "related_questions": ["4"]
+  },
+  {
+    "id": "3",
+    "question": {
+      "en": "How can I contact support?"
+    },
+    "answer": {
+      "en": "You can contact support via email at support@zynexsolutions.com."
+    },
+    "category": "Support",
+    "tags": ["contact", "support"]
+  },
+  {
+    "id": "4",
+    "question": {
+      "en": "What is the cost of your services?"
+    },
+    "answer": {
+      "en": "Our pricing varies depending on the services you need. Contact us for more details."
+    },
+    "category": "Services",
+    "tags": ["cost", "pricing"],
+    "related_questions": ["2"],
+    "explanation": "We offer a range of services, and the cost may vary based on the specific requirements."
+  },
+  {
+    "id": "5",
+    "question": {
+      "en": "Where are you located?"
+    },
+    "answer": {
+      "en": "We are located in Chennai, India."
+    },
+    "category": "General",
+    "tags": ["location", "address"]
+  }
+]
