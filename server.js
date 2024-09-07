@@ -1,5 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const fs = require("fs");
+const path = require("path");
 const helmet = require("helmet");
 const cors = require("cors");
 const rateLimit = require("express-rate-limit");
@@ -15,35 +17,56 @@ app.use(xss()); // Sanitize user input
 
 // Rate limiting
 const limiter = rateLimit({
-  windowMs: 8 * 60 * 1000, // 15 minutes
+  windowMs: 8 * 60 * 1000, // 8 minutes
   max: 100, // limit each IP to 100 requests per windowMs
 });
 app.use(limiter);
 
 app.use(bodyParser.json({ limit: "10kb" })); // Body parser, reading data from body into req.body
 
-const faq = {
-  "What is your name?": "I am a chatbot created by Zynex Solutions.",
-  "What services do you offer?":
-    "We provide web development and digital marketing services.",
-  "How can I contact support?":
-    "You can contact support via email at support@zynexsolutions.com.",
-  "What is the cost of your services?":
-    "Our pricing varies depending on the services you need. Contact us for more details.",
-  "Where are you located?": "We are located in Chennai, India.",
-};
+const qnaPath = path.join(__dirname, "qna.json");
+const faq = JSON.parse(fs.readFileSync(qnaPath, "utf8"));
 
 app.post("/ask", (req, res) => {
-  const question = req.body.question;
+  const userQuestion = req.body.question.toLowerCase();
 
-  const answer = faq[question];
+  const matchingQuestion = faq.find(
+    (item) => item.question.en.toLowerCase() === userQuestion
+  );
 
-  if (answer) {
-    res.status(200).json({ question, answer });
+  if (matchingQuestion) {
+    res.status(200).json({
+      question: matchingQuestion.question.en,
+      answer: matchingQuestion.answer.en,
+      category: matchingQuestion.category,
+      tags: matchingQuestion.tags,
+      related_questions: matchingQuestion.related_questions,
+    });
   } else {
     res
       .status(404)
       .json({ message: "Sorry, I don't have an answer for that question." });
+  }
+});
+
+app.get("/search", (req, res) => {
+  const searchTerm = req.query.query.toLowerCase();
+  const matchingQuestions = faq.filter((item) =>
+    item.question.en.toLowerCase().includes(searchTerm)
+  );
+
+  if (matchingQuestions.length > 0) {
+    const results = matchingQuestions.map((item) => ({
+      id: item.id,
+      question: item.question.en,
+      answer: item.answer.en,
+      category: item.category,
+      tags: item.tags,
+      related_questions: item.related_questions,
+    }));
+    res.status(200).json(results);
+  } else {
+    res.status(404).json({ message: "No matching questions found." });
   }
 });
 
