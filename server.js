@@ -70,6 +70,55 @@ app.get("/search", (req, res) => {
   }
 });
 
+app.get("/questions", (req, res) => {
+  const { limit, tags, category } = req.query;
+
+  let filteredQuestions = faq;
+
+  if (category) {
+    filteredQuestions = filteredQuestions.filter(
+      (item) => item.category.toLowerCase() === category.toLowerCase()
+    );
+  }
+
+  if (tags) {
+    const tagArray = tags.split(",").map((tag) => tag.trim().toLowerCase());
+    filteredQuestions = filteredQuestions.filter((item) =>
+      item.tags.some((tag) => tagArray.includes(tag.toLowerCase()))
+    );
+  }
+
+  const result = filteredQuestions.map((item) => ({
+    id: item.id,
+    question: item.question.en,
+    category: item.category,
+    tags: item.tags,
+  }));
+
+  if (limit) {
+    const parsedLimit = parseInt(limit);
+    if (!isNaN(parsedLimit) && parsedLimit > 0) {
+      res.status(200).json(result.slice(0, parsedLimit));
+    } else {
+      res.status(400).json({ message: "Invalid limit parameter" });
+    }
+  } else {
+    res.status(200).json(result);
+  }
+});
+
+app.get("/categories", (req, res) => {
+  const categories = faq.map((item) => item.category);
+  const uniqueCategories = [...new Set(categories)];
+  res.status(200).json(uniqueCategories);
+});
+
+app.get("/tags", (req, res) => {
+  const tags = faq.flatMap((item) => item.tags);
+  const uniqueTags = [...new Set(tags)];
+  res.status(200).json(uniqueTags);
+});
+
 app.listen(port, () => {
   console.log(`Chatbot API is running on http://localhost:${port}`);
 });
