@@ -11,7 +11,6 @@ router.post("/update", async (req, res) => {
     const existingNotification = await db.notification.findFirst({
       where: {
         userId: userid,
-        id: notificationStatus,
       },
     });
 
@@ -19,7 +18,7 @@ router.post("/update", async (req, res) => {
       // Update existing notification
       const updatedNotification = await db.notification.update({
         where: {
-          id: notificationStatus,
+          id: existingNotification.id,
         },
         data: {
           status: notificationStatus,
@@ -47,11 +46,18 @@ router.post("/update", async (req, res) => {
 router.get("/query", async (req, res) => {
   const { status, limit, skip } = req.query;
 
+  if (!status || typeof status !== "string") {
+    res.status(400).json({ error: "Status is required and must be a string" });
+    return;
+  }
+
   try {
-    // Ensure statuses are properly typed as NotificationStatus[]
-    const statuses = Array.isArray(status)
-      ? (status as string[]).map((s) => s as NotificationStatus)
-      : [status as NotificationStatus];
+    const statuses = status.includes(",")
+      ? status
+          .toString()
+          .split(",")
+          .map((s) => s.trim() as NotificationStatus)
+      : [status.trim() as NotificationStatus];
 
     const notifications = await db.notification.findMany({
       where: {

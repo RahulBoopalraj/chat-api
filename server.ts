@@ -1,5 +1,4 @@
 import express from "express";
-import bodyParser from "body-parser";
 import helmet from "helmet";
 import cors from "cors";
 import rateLimit from "express-rate-limit";
@@ -19,8 +18,8 @@ const limiter = rateLimit({
   max: 100, // limit each IP to 100 requests per windowMs
 });
 app.use(limiter);
-
-app.use(bodyParser.json({ limit: "10kb" })); // Body parser, reading data from body into req.body
+app.use(express.json()); // Body parser, reading data from body into req.body
+app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use("/qna", qna_router);
