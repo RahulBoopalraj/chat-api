@@ -1,34 +1,31 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const fs = require("fs");
-const path = require("path");
-const helmet = require("helmet");
-const cors = require("cors");
-const rateLimit = require("express-rate-limit");
-const xss = require("xss-clean");
+import { Router } from "express";
+import fs from "fs";
+import path from "path";
 
-const app = express();
-const port = 3000;
+const router = Router();
 
-// Security middleware
-app.use(helmet()); // Helps secure Express apps with various HTTP headers
-app.use(cors()); // Enable CORS for all routes
-app.use(xss()); // Sanitize user input
+type FAQItem = {
+  id: string;
+  question: {
+    en: string;
+  };
+  answer: {
+    en: string;
+  };
+  category: string;
+  tags: string[];
+  related_questions?: string[];
+  explanation?: string;
+};
 
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 8 * 60 * 1000, // 8 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-});
-app.use(limiter);
+// Define the type for the entire FAQ array
+type FAQ = FAQItem[];
 
-app.use(bodyParser.json({ limit: "10kb" })); // Body parser, reading data from body into req.body
+const qnaPath = path.join(__dirname, "..", "qna.json");
+const faq: FAQ = JSON.parse(fs.readFileSync(qnaPath, "utf8"));
 
-const qnaPath = path.join(__dirname, "qna.json");
-const faq = JSON.parse(fs.readFileSync(qnaPath, "utf8"));
-
-app.post("/ask", (req, res) => {
-  const userQuestion = req.body.question.toLowerCase();
+router.get("/ask", (req, res) => {
+  const userQuestion = (req.query.question as string).toLowerCase();
 
   const matchingQuestion = faq.find(
     (item) => item.question.en.toLowerCase() === userQuestion
@@ -49,8 +46,8 @@ app.post("/ask", (req, res) => {
   }
 });
 
-app.get("/search", (req, res) => {
-  const searchTerm = req.query.query.toLowerCase();
+router.get("/search", (req, res) => {
+  const searchTerm = (req.query.query as string).toLowerCase();
   const matchingQuestions = faq.filter((item) =>
     item.question.en.toLowerCase().includes(searchTerm)
   );
@@ -70,19 +67,22 @@ app.get("/search", (req, res) => {
   }
 });
 
-app.get("/questions", (req, res) => {
+router.get("/questions", (req, res) => {
   const { limit, tags, category } = req.query;
 
   let filteredQuestions = faq;
 
   if (category) {
     filteredQuestions = filteredQuestions.filter(
-      (item) => item.category.toLowerCase() === category.toLowerCase()
+      (item) =>
+        item.category.toLowerCase() === (category as string).toLowerCase()
     );
   }
 
   if (tags) {
-    const tagArray = tags.split(",").map((tag) => tag.trim().toLowerCase());
+    const tagArray = (tags as string)
+      .split(",")
+      .map((tag) => tag.trim().toLowerCase());
     filteredQuestions = filteredQuestions.filter((item) =>
       item.tags.some((tag) => tagArray.includes(tag.toLowerCase()))
     );
@@ -96,7 +96,7 @@ app.get("/questions", (req, res) => {
   }));
 
   if (limit) {
-    const parsedLimit = parseInt(limit);
+    const parsedLimit = parseInt(limit as string);
     if (!isNaN(parsedLimit) && parsedLimit > 0) {
       res.status(200).json(result.slice(0, parsedLimit));
     } else {
@@ -107,18 +107,16 @@ app.get("/questions", (req, res) => {
   }
 });
 
-app.get("/categories", (req, res) => {
+router.get("/categories", (req, res) => {
   const categories = faq.map((item) => item.category);
   const uniqueCategories = [...new Set(categories)];
   res.status(200).json(uniqueCategories);
 });
 
-app.get("/tags", (req, res) => {
+router.get("/tags", (req, res) => {
   const tags = faq.flatMap((item) => item.tags);
   const uniqueTags = [...new Set(tags)];
   res.status(200).json(uniqueTags);
 });
 
-app.listen(port, () => {
-  console.log(`Chatbot API is running on http://localhost:${port}`);
-});
+export default router;
