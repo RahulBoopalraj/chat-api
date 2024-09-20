@@ -5,7 +5,7 @@
       "en": "What is your name?"
     },
     "answer": {
-      "en": "I am a chatbot created by Zynex Solutions."
+      "en": "I am a chatbot, how may I help you?"
     },
     "category": "General",
     "tags": ["name", "about"],
@@ -29,7 +29,7 @@
       "en": "How can I contact support?"
     },
     "answer": {
-      "en": "You can contact support via email at support@zynexsolutions.com."
+      "en": "You can contact support via email at support@example.com."
     },
     "category": "Support",
     "tags": ["contact", "support"]
