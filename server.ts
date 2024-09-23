@@ -4,6 +4,7 @@ import cors from "cors";
 import rateLimit from "express-rate-limit";
 import qna_router from "./routes/qna";
 import notification_router from "./routes/notification";
+import user_activity_router from "./routes/user-activity";
 
 const app = express();
 const port = 3000;
@@ -24,6 +25,7 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use("/qna", qna_router);
 app.use("/notification", notification_router);
+app.use("/user-activity", user_activity_router);
 
 app.listen(port, () => {
   console.log(`Chatbot API is running on http://localhost:${port}`);

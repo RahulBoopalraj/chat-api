@@ -23,6 +23,18 @@ enum NotificationStatus {
   ITEM_PURCHASED
 }
 
+enum ActivityType {
+  NO_ACTIVITY
+  ACTIVITY_1
+  ACTIVITY_2
+  ACTIVITY_3
+  ACTIVITY_4
+  ACTIVITY_5
+  ACTIVITY_6
+  ACTIVITY_7
+  ACTIVITY_8
+}
+
 model Notification {
   id                 Int                @id @default(autoincrement())
   userId             String
@@ -30,4 +42,12 @@ model Notification {
   additional_message String?
   createdAt          DateTime           @default(now())
   updatedAt          DateTime           @updatedAt
+}
+
+model UserActivity {
+  id        Int            @id @default(autoincrement())
+  userId    String
+  activity  ActivityType[]
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
 }
