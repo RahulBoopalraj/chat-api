@@ -5,6 +5,8 @@ import rateLimit from "express-rate-limit";
 import qna_router from "./routes/qna";
 import notification_router from "./routes/notification";
 import user_activity_router from "./routes/user-activity";
+import search_router from "./routes/search";
+import tags_router from "./routes/tags";
 
 const app = express();
 const port = 3000;
@@ -26,6 +28,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/qna", qna_router);
 app.use("/notification", notification_router);
 app.use("/user-activity", user_activity_router);
+app.use("/search", search_router);
+app.use("/tags", tags_router);
 
 app.listen(port, () => {
   console.log(`Chatbot API is running on http://localhost:${port}`);
