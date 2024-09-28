@@ -21,7 +21,10 @@ router.get("/", (req, res) => {
   if (!query || typeof query !== "string") {
     return res
       .status(400)
-      .json({ error: "Query parameter is required and must be a string" });
+      .json({
+        error:
+          "Query parameter is required and must be a non-empty string. Please provide a search term.",
+      });
   }
 
   const keywords = query.toLowerCase().split(" ");
@@ -38,16 +41,28 @@ router.get("/", (req, res) => {
 
   if (skip) {
     const skipNumber = parseInt(skip as string);
-    if (!isNaN(skipNumber) && skipNumber > 0) {
-      matchingProducts = matchingProducts.slice(skipNumber);
+    if (isNaN(skipNumber) || skipNumber < 0) {
+      return res
+        .status(400)
+        .json({
+          error:
+            "Skip parameter must be a non-negative integer. Please provide a valid number.",
+        });
     }
+    matchingProducts = matchingProducts.slice(skipNumber);
   }
 
   if (limit) {
     const limitNumber = parseInt(limit as string);
-    if (!isNaN(limitNumber) && limitNumber > 0) {
-      matchingProducts = matchingProducts.slice(0, limitNumber);
+    if (isNaN(limitNumber) || limitNumber <= 0) {
+      return res
+        .status(400)
+        .json({
+          error:
+            "Limit parameter must be a positive integer. Please provide a valid number greater than 0.",
+        });
     }
+    matchingProducts = matchingProducts.slice(0, limitNumber);
   }
 
   if (matchingProducts.length > 0) {
@@ -56,7 +71,12 @@ router.get("/", (req, res) => {
       results: matchingProducts,
     });
   } else {
-    res.status(404).json({ message: "No matching products found." });
+    res
+      .status(404)
+      .json({
+        message:
+          "No matching products found. Try using different keywords or check your spelling.",
+      });
   }
 });
 
@@ -67,7 +87,10 @@ router.get("/product", (req, res) => {
   if (!id || typeof id !== "string") {
     return res
       .status(400)
-      .json({ error: "ID parameter is required and must be a string" });
+      .json({
+        error:
+          "ID parameter is required and must be a non-empty string. Please provide a valid product ID.",
+      });
   }
 
   const product = products.find((p) => p.id === id);
@@ -75,7 +98,12 @@ router.get("/product", (req, res) => {
   if (product) {
     res.status(200).json(product);
   } else {
-    res.status(404).json({ message: "Product not found." });
+    res
+      .status(404)
+      .json({
+        message:
+          "Product not found. The provided ID does not match any existing product.",
+      });
   }
 });
 

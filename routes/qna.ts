@@ -25,10 +25,16 @@ const qnaPath = path.join(__dirname, "..", "qna.json");
 const faq: FAQ = JSON.parse(fs.readFileSync(qnaPath, "utf8"));
 
 router.get("/ask", (req, res) => {
-  const userQuestion = (req.query.question as string).toLowerCase();
+  const userQuestion = req.query.question;
+
+  if (!userQuestion || typeof userQuestion !== "string") {
+    return res
+      .status(400)
+      .json({ error: "Question parameter is required and must be a string" });
+  }
 
   const matchingQuestion = faq.find(
-    (item) => item.question.en.toLowerCase() === userQuestion
+    (item) => item.question.en.toLowerCase() === userQuestion.toLowerCase()
   );
 
   if (matchingQuestion) {
@@ -40,16 +46,24 @@ router.get("/ask", (req, res) => {
       related_questions: matchingQuestion.related_questions,
     });
   } else {
-    res
-      .status(404)
-      .json({ message: "Sorry, I don't have an answer for that question." });
+    res.status(404).json({
+      error:
+        "No exact match found for the provided question. Try rephrasing or use the search endpoint for partial matches.",
+    });
   }
 });
 
 router.get("/search", (req, res) => {
-  const searchTerm = (req.query.query as string).toLowerCase();
+  const searchTerm = req.query.query;
+
+  if (!searchTerm || typeof searchTerm !== "string") {
+    return res
+      .status(400)
+      .json({ error: "Query parameter is required and must be a string" });
+  }
+
   const matchingQuestions = faq.filter((item) =>
-    item.question.en.toLowerCase().includes(searchTerm)
+    item.question.en.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   if (matchingQuestions.length > 0) {
@@ -63,7 +77,10 @@ router.get("/search", (req, res) => {
     }));
     res.status(200).json(results);
   } else {
-    res.status(404).json({ message: "No matching questions found." });
+    res.status(404).json({
+      error:
+        "No questions found matching the search term. Try using different keywords or check your spelling.",
+    });
   }
 });
 
@@ -73,16 +90,21 @@ router.get("/questions", (req, res) => {
   let filteredQuestions = faq;
 
   if (category) {
+    if (typeof category !== "string") {
+      return res
+        .status(400)
+        .json({ error: "Category parameter must be a string" });
+    }
     filteredQuestions = filteredQuestions.filter(
-      (item) =>
-        item.category.toLowerCase() === (category as string).toLowerCase()
+      (item) => item.category.toLowerCase() === category.toLowerCase()
     );
   }
 
   if (tags) {
-    const tagArray = (tags as string)
-      .split(",")
-      .map((tag) => tag.trim().toLowerCase());
+    if (typeof tags !== "string") {
+      return res.status(400).json({ error: "Tags parameter must be a string" });
+    }
+    const tagArray = tags.split(",").map((tag) => tag.trim().toLowerCase());
     filteredQuestions = filteredQuestions.filter((item) =>
       item.tags.some((tag) => tagArray.includes(tag.toLowerCase()))
     );
@@ -97,13 +119,21 @@ router.get("/questions", (req, res) => {
 
   if (limit) {
     const parsedLimit = parseInt(limit as string);
-    if (!isNaN(parsedLimit) && parsedLimit > 0) {
-      res.status(200).json(result.slice(0, parsedLimit));
-    } else {
-      res.status(400).json({ message: "Invalid limit parameter" });
+    if (isNaN(parsedLimit) || parsedLimit <= 0) {
+      return res
+        .status(400)
+        .json({ error: "Limit parameter must be a positive integer" });
     }
+    res.status(200).json(result.slice(0, parsedLimit));
   } else {
     res.status(200).json(result);
+  }
+
+  if (result.length === 0) {
+    res.status(404).json({
+      error:
+        "No questions found matching the specified criteria. Try adjusting your category or tags.",
+    });
   }
 });
 
