@@ -1,15 +1,24 @@
 import express from "express";
 import helmet from "helmet";
 import cors from "cors";
+import path from "path";
 import rateLimit from "express-rate-limit";
 import qna_router from "./routes/qna";
 import notification_router from "./routes/notification";
 import user_activity_router from "./routes/user-activity";
 import search_router from "./routes/search";
 import tags_router from "./routes/tags";
+import admin_qna_router from "./routes/admin-qna";
+import admin_product_router from "./routes/admin-product";
 
 const app = express();
 const port = 3000;
+
+// Set the views directory for ejs templates
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "ejs");
+
+app.use(express.static(path.join(__dirname, "public")));
 
 // Security middleware
 app.use(helmet());
@@ -30,6 +39,8 @@ app.use("/notification", notification_router);
 app.use("/user-activity", user_activity_router);
 app.use("/search", search_router);
 app.use("/tags", tags_router);
+app.use("/admin", admin_qna_router);
+app.use("/admin", admin_product_router);
 
 app.listen(port, () => {
   console.log(`Chatbot API is running on http://localhost:${port}`);

@@ -1,0 +1,90 @@
+<%- include('templates/head') %>
+<div class="flex justify-center max-w-xl mx-auto">
+  <form action="/admin/qna/edit/<%= id %>" method="POST" class="w-full mt-5">
+    <div class="form-control w-full mb-4">
+      <div class="label">
+        <span class="label-text">Question (English) *</span>
+      </div>
+      <input
+        type="text"
+        name="question_en"
+        value="<%= question %>"
+        placeholder="Type the question here"
+        class="input input-bordered w-full"
+        required
+      />
+    </div>
+
+    <div class="form-control w-full mb-4">
+      <div class="label">
+        <span class="label-text">Answer (English) *</span>
+      </div>
+      <input
+        type="text"
+        name="answer_en"
+        value="<%= answer %>"
+        placeholder="Type the answer here"
+        class="input input-bordered w-full"
+        required
+      />
+    </div>
+
+    <div class="form-control w-full mb-4">
+      <div class="label">
+        <span class="label-text">Category *</span>
+      </div>
+      <input
+        type="text"
+        name="category"
+        value="<%= category %>"
+        placeholder="Type the category here"
+        class="input input-bordered w-full"
+        required
+      />
+    </div>
+
+    <div class="form-control w-full mb-4">
+      <div class="label">
+        <span class="label-text">Tags (comma separated)</span>
+      </div>
+      <input
+        type="text"
+        name="tags"
+        value="<%= tags %>"
+        placeholder="e.g. tag1, tag2"
+        class="input input-bordered w-full"
+      />
+    </div>
+
+    <div class="form-control w-full mb-4">
+      <div class="label">
+        <span class="label-text"
+          >Id of Related Questions (comma separated)</span
+        >
+      </div>
+      <input
+        type="text"
+        name="related_questions"
+        value="<%= related_questions %>"
+        placeholder="eg, Id1, Id2"
+        class="input input-bordered w-full"
+      />
+    </div>
+
+    <div class="form-control w-full mb-4">
+      <div class="label">
+        <span class="label-text">Explanation (Optional)</span>
+      </div>
+      <textarea
+        name="explanation"
+        placeholder="Type the explanation here"
+        class="textarea textarea-bordered w-full"
+      >
+<%= explanation %></textarea
+      >
+    </div>
+
+    <button type="submit" class="btn btn-primary w-full">Update QnA</button>
+  </form>
+</div>
+<%- include('templates/foot.ejs') %>
