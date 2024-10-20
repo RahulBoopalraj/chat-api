@@ -95,7 +95,7 @@ router
 
     try {
       const product = await db.product.findUnique({
-        where: { id: parseInt(id) },
+        where: { id: id },
       });
 
       if (!product) {
@@ -120,7 +120,7 @@ router
 
     try {
       const updatedProduct = await db.product.update({
-        where: { id: parseInt(id) },
+        where: { id: id },
         data: {
           name,
           price: parseInt(price),

@@ -16,8 +16,7 @@ router.get("/ask", async (req, res) => {
     const matchingQuestion = await db.qnA.findFirst({
       where: {
         question: {
-          path: ["en"],
-          equals: userQuestion.toLowerCase(),
+          equals: { en: userQuestion.toLowerCase() },
         },
       },
     });
@@ -55,8 +54,22 @@ router.get("/search", async (req, res) => {
     const matchingQuestions = await db.qnA.findMany({
       where: {
         question: {
-          path: ["en"],
-          string_contains: searchTerm.toLowerCase(),
+          $jsonSchema: {
+            bsonType: "object",
+            required: ["en"],
+            properties: {
+              en: {
+                bsonType: "string",
+                description: "must be a string and is required",
+              },
+            },
+          },
+          $expr: {
+            $regexMatch: {
+              input: { $toLower: "$question.en" },
+              regex: searchTerm.toLowerCase(),
+            },
+          },
         },
       },
     });

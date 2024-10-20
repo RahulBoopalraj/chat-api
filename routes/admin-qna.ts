@@ -23,8 +23,9 @@ router.get("/qna", async (req, res) => {
     if (search && typeof search === "string") {
       whereCondition = {
         question: {
-          path: ["en"],
-          string_contains: search.toLowerCase(),
+          en: {
+            contains: search.toLowerCase(),
+          },
         },
       };
     }
@@ -107,7 +108,7 @@ router
 
     try {
       const qna = await db.qnA.findUnique({
-        where: { id: parseInt(id) },
+        where: { id: id },
       });
 
       if (!qna) {
@@ -141,7 +142,7 @@ router
 
     try {
       const updatedQnA = await db.qnA.update({
-        where: { id: parseInt(id) },
+        where: { id: id },
         data: {
           question: { en: question_en },
           answer: { en: answer_en },
