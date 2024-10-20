@@ -1,61 +1,130 @@
-[
-  {
-    "id": "1",
-    "question": {
-      "en": "What is your name?"
-    },
-    "answer": {
-      "en": "I am a chatbot, how may I help you?"
-    },
-    "category": "General",
-    "tags": ["name", "about"],
-    "related_questions": ["2", "4"]
+{
+  "intro": {
+    "message": "Hello there! Welcome to Hogist Online Service. We have the best solution for all your food needs. I am Hogist Chat Buddy here to assist you.",
+    "type": "message"
   },
-  {
-    "id": "2",
-    "question": {
-      "en": "What services do you offer?"
+  "questions": [
+    {
+      "id": 1,
+      "question": "Hey there! Could you send me your mobile number please?",
+      "answerType": {
+        "type": "custom_message",
+        "restrictions": {
+          "regex": "^\\d{10}$",
+          "errorMessage": "Please enter a valid 10-digit mobile number."
+        }
+      },
+      "next": 2
     },
-    "answer": {
-      "en": "We provide web development and digital marketing services."
+    {
+      "id": 2,
+      "question": "Hey there! What's your name? I'd love to know!",
+      "answerType": {
+        "type": "custom_message"
+      },
+      "next": 3
     },
-    "category": "Services",
-    "tags": ["services", "offerings"],
-    "related_questions": ["4"]
-  },
-  {
-    "id": "3",
-    "question": {
-      "en": "How can I contact support?"
+    {
+      "id": 3,
+      "question": "Hey {{name}}! What tasty treats are you in the mood for from us?",
+      "options": [
+        "Event food services",
+        "Corporate food services",
+        "Industrial food services",
+        "Cafeteria food services",
+        "Others"
+      ],
+      "answerType": {
+        "type": "choice_with_other",
+        "otherPrompt": "Please specify your service."
+      },
+      "next": {
+        "Event food services": 4,
+        "Corporate food services": 8,
+        "Industrial food services": 8,
+        "Cafeteria food services": 8,
+        "Others": 12
+      }
     },
-    "answer": {
-      "en": "You can contact support via email at support@example.com."
+    {
+      "id": 4,
+      "question": "How many Count do you think that you are looking for?",
+      "options": [">25", "25-50", "50-100", "100-150", "<150"],
+      "answerType": {
+        "type": "choice"
+      },
+      "next": 5
     },
-    "category": "Support",
-    "tags": ["contact", "support"]
-  },
-  {
-    "id": "4",
-    "question": {
-      "en": "What is the cost of your services?"
+    {
+      "id": 5,
+      "question": "What type of food are you craving?",
+      "options": ["Veg", "Non-veg", "Veg with Egg"],
+      "answerType": {
+        "type": "choice"
+      },
+      "next": 6
     },
-    "answer": {
-      "en": "Our pricing varies depending on the services you need. Contact us for more details."
+    {
+      "id": 6,
+      "question": "Do you need any extra services to make your experience even better?",
+      "options": [
+        "No thanks",
+        "Table service",
+        "Leaf services",
+        "Service Person",
+        "Other services"
+      ],
+      "answerType": {
+        "type": "choice_with_other",
+        "otherPrompt": "Enter your service need"
+      },
+      "next": 7
     },
-    "category": "Services",
-    "tags": ["cost", "pricing"],
-    "related_questions": ["2"],
-    "explanation": "We offer a range of services, and the cost may vary based on the specific requirements."
-  },
-  {
-    "id": "5",
-    "question": {
-      "en": "Where are you located?"
+    {
+      "id": 7,
+      "question": "Could you share your event location with me please?",
+      "answerType": {
+        "type": "custom_message"
+      },
+      "next": -1
     },
-    "answer": {
-      "en": "We are located in Chennai, India."
+    {
+      "id": 8,
+      "question": "How many Count do you think that you are looking for?",
+      "options": [">25", "25-50", "50-100", "100-150", "<150"],
+      "answerType": {
+        "type": "choice"
+      },
+      "next": 9
     },
-    "category": "General",
-    "tags": ["location", "address"]
+    {
+      "id": 9,
+      "question": "What type of food are you craving?",
+      "options": ["Veg", "Non-veg", "Veg with Egg"],
+      "answerType": {
+        "type": "choice"
+      },
+      "next": 10
+    },
+    {
+      "id": 10,
+      "question": "Could you share your event location with me please?",
+      "answerType": {
+        "type": "custom_message"
+      },
+      "next": -1
+    },
+    {
+      "id": 12,
+      "question": "Hey {{name}}! How may I help you?",
+      "answerType": {
+        "type": "custom_message"
+      },
+      "next": -1
+    }
+  ],
+  "closing": {
+    "message": "Thank you for your patience. The Hogist team will reach you shortly. If you have any queries, please call us at (999 999 9999). Happy to serve you!",
+    "type": "message"
   }
-]
+}
