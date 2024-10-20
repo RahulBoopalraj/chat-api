@@ -53,15 +53,18 @@ model UserActivity {
 }
 
 model QnA {
-  id                String   @id @default(auto()) @map("_id") @db.ObjectId
-  question          Json
-  answer            Json
-  category          String
-  tags              String[]
-  related_questions String[]
-  explanation       String?
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  mobileNumber  String   @db.String
+  name          String   @db.String
+  serviceType   String   @db.String
+  guestCount    String?  @db.String
+  foodType      String?  @db.String
+  extraServices String?  @db.String
+  eventLocation String?  @db.String
+  customService String?  @db.String
+  helpRequest   String?  @db.String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 model Product {
