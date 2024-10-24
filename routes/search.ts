@@ -69,7 +69,7 @@ router.get("/product", async (req, res) => {
 
   try {
     const product = await db.product.findUnique({
-      where: { id: parseInt(id) },
+      where: { id: id },
     });
 
     if (product) {

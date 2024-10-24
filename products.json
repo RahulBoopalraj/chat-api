@@ -1,72 +1,111 @@
 [
   {
-    "id": "1",
     "name": "Dosa",
     "price": 50,
     "description": "A crispy, savory crepe made from fermented rice and lentil batter, typically served with chutney and sambar.",
-    "tags": ["breakfast", "vegetarian", "crispy", "savory"]
+    "tags": [
+      "breakfast",
+      "vegetarian",
+      "crispy",
+      "savory"
+    ]
   },
   {
-    "id": "2",
     "name": "Idli",
     "price": 40,
     "description": "Soft, steamed rice cakes made from fermented batter, perfect for breakfast or as a light meal.",
-    "tags": ["breakfast", "vegetarian", "steamed", "light"]
+    "tags": [
+      "breakfast",
+      "vegetarian",
+      "steamed",
+      "light"
+    ]
   },
   {
-    "id": "3",
     "name": "Sambar",
     "price": 60,
     "description": "A hearty lentil-based vegetable stew flavored with tamarind and aromatic spices.",
-    "tags": ["vegetarian", "spicy", "stew", "side dish"]
+    "tags": [
+      "vegetarian",
+      "spicy",
+      "stew",
+      "side dish"
+    ]
   },
   {
-    "id": "4",
     "name": "Vada",
     "price": 30,
     "description": "Crispy, savory doughnut-shaped fritters made from lentil batter, often served as a snack or side dish.",
-    "tags": ["snack", "vegetarian", "crispy", "side dish"]
+    "tags": [
+      "snack",
+      "vegetarian",
+      "crispy",
+      "side dish"
+    ]
   },
   {
-    "id": "5",
     "name": "Pongal",
     "price": 70,
     "description": "A comforting rice and lentil dish cooked with ghee, black pepper, and cumin, often served during festivals.",
-    "tags": ["vegetarian", "festive", "comfort food"]
+    "tags": [
+      "vegetarian",
+      "festive",
+      "comfort food"
+    ]
   },
   {
-    "id": "6",
     "name": "Rasam",
     "price": 45,
     "description": "A tangy, spicy soup made with tamarind juice, tomatoes, and various spices, known for its digestive properties.",
-    "tags": ["soup", "spicy", "tangy", "digestive"]
+    "tags": [
+      "soup",
+      "spicy",
+      "tangy",
+      "digestive"
+    ]
   },
   {
-    "id": "7",
     "name": "Appam",
     "price": 55,
     "description": "Lacy, bowl-shaped rice pancakes with crispy edges and a soft center, typically served with stew or curry.",
-    "tags": ["breakfast", "vegetarian", "crispy", "soft"]
+    "tags": [
+      "breakfast",
+      "vegetarian",
+      "crispy",
+      "soft"
+    ]
   },
   {
-    "id": "8",
     "name": "Bisi Bele Bath",
     "price": 80,
     "description": "A flavorful, spicy rice dish made with lentils, vegetables, and aromatic spices, originating from Karnataka.",
-    "tags": ["spicy", "vegetarian", "rice dish", "Karnataka cuisine"]
+    "tags": [
+      "spicy",
+      "vegetarian",
+      "rice dish",
+      "Karnataka cuisine"
+    ]
   },
   {
-    "id": "9",
     "name": "Chettinad Chicken Curry",
     "price": 120,
     "description": "A fiery, aromatic chicken curry from the Chettinad region, known for its complex blend of spices.",
-    "tags": ["non-vegetarian", "spicy", "curry", "Chettinad cuisine"]
+    "tags": [
+      "non-vegetarian",
+      "spicy",
+      "curry",
+      "Chettinad cuisine"
+    ]
   },
   {
-    "id": "10",
     "name": "Payasam",
     "price": 65,
     "description": "A sweet, creamy dessert made with milk, rice or vermicelli, and flavored with cardamom and nuts.",
-    "tags": ["dessert", "sweet", "creamy", "festive"]
+    "tags": [
+      "dessert",
+      "sweet",
+      "creamy",
+      "festive"
+    ]
   }
 ]

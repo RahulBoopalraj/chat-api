@@ -39,8 +39,8 @@ app.use("/notification", notification_router);
 app.use("/user-activity", user_activity_router);
 app.use("/search", search_router);
 app.use("/tags", tags_router);
-app.use("/admin", admin_qna_router);
-app.use("/admin", admin_product_router);
+// app.use("/admin", admin_qna_router);
+// app.use("/admin", admin_product_router);
 
 app.listen(port, () => {
   console.log(`Chatbot API is running on http://localhost:${port}`);

@@ -1,50 +1,40 @@
 <%- include('templates/head') %>
 
-    <div class="flex justify-end mb-3 mt-3">
-      <form id="searchForm" class="flex items-center">
-        <label class="input input-bordered flex items-center gap-2">
-          <input
-            type="text"
-            class="grow"
-            placeholder="Search"
-            name="search"
-            value="<%= search || '' %>"
-          />
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 16 16"
-            fill="currentColor"
-            class="h-4 w-4 opacity-70"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
-              clip-rule="evenodd"
-            />
-          </svg>
-        </label>
-        <button type="submit" class="btn btn-primary ml-3">Search</button>
-      </form>
-      <a href="/admin/qna/add" class="btn btn-primary ml-3">Add QnA</a>
-    </div>
-    <div class="overflow-x-auto">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Question</th>
-            <th>Category</th>
-            <th>Tags</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% questions.forEach(question => { %>
+  <div class="flex justify-end mb-3 mt-3">
+    <form id="searchForm" class="flex items-center">
+      <label class="input input-bordered flex items-center gap-2">
+        <input type="text" class="grow" placeholder="Search" name="search" value="<%= search || '' %>" />
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-4 w-4 opacity-70">
+          <path fill-rule="evenodd"
+            d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+            clip-rule="evenodd" />
+        </svg>
+      </label>
+      <button type="submit" class="btn btn-primary ml-3">Search</button>
+    </form>
+    <a href="/admin/qna/add" class="btn btn-primary ml-3">Add QnA</a>
+  </div>
+  <div class="overflow-x-auto">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Question</th>
+          <th>Category</th>
+          <th>Tags</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% questions.forEach(question=> { %>
           <tr class="hover">
-            <td><%= question.id %></td>
-            <td><%= question.question.en %></td>
-            <td><%= question.category %></td>
-            <td><%= question.tags.join(', ') %></td>
+            <td>
+              <%= question.question.en %>
+            </td>
+            <td>
+              <%= question.category %>
+            </td>
+            <td>
+              <%= question.tags.join(', ') %></td>
             <td>
               <a
                 href="/admin/qna/edit/<%= question.id %>"
@@ -60,24 +50,26 @@
 
     <div class="flex justify-end mb-3 mt-3">
       <div class="join">
-        <a id="page-backward" class="join-item btn" <%= previousExist ? '' : 'disabled' %> href="<%= previousLink %>">«</a>
-        <span class="join-item btn">Page <%= page %></span>
-        <a id="page-forward" class="join-item btn" <%= nextExist ? '' : 'disabled' %> href="<%= nextLink %>">»</a>
-      </div>
-    </div>
+        <a id="page-backward" class="join-item btn" <%= previousExist ? '' : ' disabled' %> href="<%= previousLink %>
+                  ">«</a>
+                  <span class="join-item btn">Page <%= page %></span>
+                  <a id="page-forward" class="join-item btn" <%=nextExist ? '' : 'disabled' %> href="<%= nextLink %>
+                      ">»</a>
+  </div>
+  </div>
 
-<script defer>
-  document
-    .getElementById("searchForm")
-    .addEventListener("submit", function (e) {
-      e.preventDefault();
-      const searchValue = this.search.value.trim();
-      if (searchValue) {
-        window.location.href = `?search=${encodeURIComponent(searchValue)}`;
-      } else {
-        window.location.href = "/admin";
-      }
-    });
-</script>
+  <script defer>
+    document
+      .getElementById("searchForm")
+      .addEventListener("submit", function (e) {
+        e.preventDefault();
+        const searchValue = this.search.value.trim();
+        if (searchValue) {
+          window.location.href = `?search=${encodeURIComponent(searchValue)}`;
+        } else {
+          window.location.href = "/admin";
+        }
+      });
+  </script>
 
-<%- include('templates/foot.ejs') %>
+  <%- include('templates/foot.ejs') %>

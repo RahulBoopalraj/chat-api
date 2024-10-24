@@ -1,6 +1,7 @@
 import { Router } from "express";
 import fs from "fs";
 import path from "path";
+import db from "../utils/db";
 
 const router = Router();
 
@@ -45,18 +46,16 @@ router.post("/submit", async (req, res) => {
       eventLocation,
       customService,
       helpRequest,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     };
 
     // Here you would typically save the newQnA to the database
     // For example, using Prisma:
-    // const savedQnA = await prisma.qnA.create({ data: newQnA });
+    const savedQnA = await db.qnA.create({
+      data: newQnA,
+    });
 
-    // Simulating database save with a success response
-    res
-      .status(201)
-      .json({ message: "Form submitted successfully", data: newQnA });
+    // Return a success response
+    res.status(201).json({ message: "Form submitted successfully", data: savedQnA });
   } catch (error) {
     res.status(500).json({ error: "Failed to submit form" });
   }

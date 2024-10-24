@@ -26,61 +26,39 @@ router.post("/update", async (req, res) => {
     });
   }
 
-  const existingUserActivity = await db.userActivity.findFirst({
-    where: {
-      userId: userid,
-    },
-  });
-
-  if (existingUserActivity) {
-    let activityVector = existingUserActivity.activity;
-    activityVector[activityPosition] = activityType;
-
-    const updatedUserActivity = await db.userActivity
-      .update({
-        where: {
-          id: existingUserActivity.id,
-        },
-        data: {
-          activity: activityVector,
-        },
-      })
-      .catch((error) => {
-        console.error("Error updating user activity:", error);
-        return res
-          .status(500)
-          .json({ error: "Failed to update user activity" });
-      });
-
-    if (updatedUserActivity) {
-      res.status(200).json(updatedUserActivity);
-    }
-  } else {
-    let activityVector = Array(15).fill("NO_ACTIVITY");
-    activityVector[activityPosition] = activityType;
-
-    const newUserActivity = await db.userActivity
-      .create({
-        data: {
+  try {
+    const result = await db.userActivity.upsert({
+      where: {
+        userId_activityPosition: {
           userId: userid,
-          activity: activityVector,
-        },
-      })
-      .catch((error) => {
-        console.error("Error creating user activity:", error);
-        return res
-          .status(500)
-          .json({ error: "Failed to create user activity" });
-      });
+          activityPosition: parseInt(activityPosition)
+        }
+      },
+      create: {
+        userId: userid,
+        activityPosition: parseInt(activityPosition),
+        activity: activityType,
+      },
 
-    if (newUserActivity) {
-      res.status(201).json(newUserActivity);
-    }
+      update: {
+        activityPosition: parseInt(activityPosition),
+        activity: activityType
+      },
+    })
+
+    res.status(200).json({
+      message: "User Activity Has been updated successfully",
+      data: result
+    })
+  } catch (error) {
+    res.status(500).json({
+      error: "server side error: Failed to update user activity",
+    })
   }
 });
 
 router.get("/query", async (req, res) => {
-  let { count_only, activityType, activityPosition } = req.query;
+  let { count_only, activityType, activityPosition, skip, limit } = req.query;
 
   if (!activityType || typeof activityType !== "string") {
     return res.status(400).json({ error: "Invalid or missing activityType" });
@@ -90,6 +68,16 @@ router.get("/query", async (req, res) => {
     return res
       .status(400)
       .json({ error: "Invalid or missing activityPosition" });
+  }
+
+  if (limit && (isNaN(Number(limit)) || Number(limit) < 1)) {
+    return res.status(400).json({ error: "Limit must be a positive number" });
+  }
+
+  if (skip && (isNaN(Number(skip)) || Number(skip) < 0)) {
+    return res
+      .status(400)
+      .json({ error: "Skip must be a non-negative number" });
   }
 
   let activityPositionInt = parseInt(activityPosition);
@@ -107,34 +95,40 @@ router.get("/query", async (req, res) => {
   activityPositionInt += 1; // Adjusting for array index in SQL
 
   if (count_only === "true") {
-    const userActivityCount = await db.$queryRaw`
-      SELECT COUNT(*)::INTEGER as count
-      FROM "UserActivity"
-      WHERE activity[${activityPositionInt}] = ${activityType}::"ActivityType"
-    `.catch((error) => {
-      console.error("Error querying user activity count:", error);
-      return res
-        .status(500)
-        .json({ error: "Failed to query user activity count" });
-    });
+    try {
+      const userActivityCount = await db.userActivity.count({
+        where: {
+          activityPosition: parseInt(activityPosition),
+          activity: activityType as ActivityType
+        }
+      })
 
-    if (userActivityCount) {
-      res.status(200).json({
-        count: (userActivityCount as any)[0].count,
-      });
+      return res.status(200).json({
+        data: userActivityCount
+      })
+    } catch (error) {
+      return res.status(500).json({
+        error: "Server Side Error: Cannot fetch user activity count"
+      })
     }
   } else {
-    const userActivity = await db.$queryRaw`
-      SELECT *
-      FROM "UserActivity"
-      WHERE activity[${activityPositionInt}] = ${activityType}::"ActivityType"
-    `.catch((error) => {
-      console.error("Error querying user activity:", error);
-      return res.status(500).json({ error: "Failed to query user activity" });
-    });
+    try {
+      const userActivities = await db.userActivity.findMany({
+        where: {
+          activityPosition: parseInt(activityPosition),
+          activity: activityType as ActivityType
+        },
+        take: limit ? parseInt(limit as string) : undefined,
+        skip: skip ? parseInt(skip as string) : undefined,
+      })
 
-    if (userActivity) {
-      res.status(200).json(userActivity);
+      return res.status(200).json({
+        data: userActivities,
+      })
+    } catch (error) {
+      return res.status(500).json({
+        error: "Server Side Error: Cannot fetch the user activity count"
+      })
     }
   }
 });

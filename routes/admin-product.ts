@@ -23,7 +23,8 @@ router.get("/product", async (req, res) => {
     if (search && typeof search === "string") {
       whereCondition = {
         name: {
-          contains: search.toLowerCase(),
+          $regex: search,
+          $options: "i",
         },
       };
     }

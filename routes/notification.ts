@@ -26,35 +26,32 @@ router.post("/update", async (req, res) => {
       .json({ error: "additionalMessage must be a string" });
   }
 
-  const existingNotification = await db.notification.findFirst({
-    where: {
-      userId: userid,
-    },
-  });
-
-  if (existingNotification) {
-    // Update existing notification
-    const updatedNotification = await db.notification.update({
+  try {
+    const notification = await db.notification.upsert({
       where: {
-        id: existingNotification.id,
+        userId: userid,
       },
-      data: {
+      update: {
         status: notificationStatus,
         additional_message: additionalMessage,
       },
-    });
-    res.status(200).json(updatedNotification);
-  } else {
-    // Create new notification
-    const newNotification = await db.notification.create({
-      data: {
+      create: {
         userId: userid,
         status: notificationStatus,
         additional_message: additionalMessage,
       },
     });
-    res.status(201).json(newNotification);
+
+    res.status(201).json({
+      message: "User Notification Status Updated Successfully",
+      data: notification,
+    })
+  } catch (error) {
+    res.status(500).json({
+      error: "Failed to update user notification status",
+    })
   }
+
 });
 
 router.get("/query", async (req, res) => {
@@ -68,9 +65,9 @@ router.get("/query", async (req, res) => {
 
   const statuses = status.includes(",")
     ? status
-        .toString()
-        .split(",")
-        .map((s) => s.trim() as NotificationStatus)
+      .toString()
+      .split(",")
+      .map((s) => s.trim() as NotificationStatus)
     : [status.trim() as NotificationStatus];
 
   if (statuses.some((s) => !Object.values(NotificationStatus).includes(s))) {
@@ -87,17 +84,23 @@ router.get("/query", async (req, res) => {
       .json({ error: "Skip must be a non-negative number" });
   }
 
-  const notifications = await db.notification.findMany({
-    where: {
-      status: {
-        in: statuses,
+  try {
+    const notifications = await db.notification.findMany({
+      where: {
+        status: {
+          in: statuses,
+        }
       },
-    },
-    take: limit ? parseInt(limit as string) : undefined,
-    skip: skip ? parseInt(skip as string) : undefined,
-  });
+      take: limit ? parseInt(limit as string) : undefined,
+      skip: skip ? parseInt(skip as string) : undefined,
+    })
 
-  res.status(200).json(notifications);
+    return res.status(200).json(notifications);
+  } catch (error) {
+    return res.status(500).json({
+      error: "server side error: could not access the database",
+    })
+  }
 });
 
 export default router;

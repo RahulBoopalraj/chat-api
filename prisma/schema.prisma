@@ -37,7 +37,7 @@ enum ActivityType {
 
 model Notification {
   id                 String             @id @default(auto()) @map("_id") @db.ObjectId
-  userId             String
+  userId             String             @unique
   status             NotificationStatus
   additional_message String?
   createdAt          DateTime           @default(now())
@@ -45,11 +45,14 @@ model Notification {
 }
 
 model UserActivity {
-  id        String         @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String
-  activity  ActivityType[]
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
+  id               String       @id @default(auto()) @map("_id") @db.ObjectId
+  userId           String
+  activityPosition Int
+  activity         ActivityType
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  @@unique([userId, activityPosition])
 }
 
 model QnA {
