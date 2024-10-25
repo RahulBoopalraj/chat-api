@@ -20,18 +20,14 @@ router.get("/product", async (req, res) => {
     let totalCount;
     let whereCondition = {};
 
-    if (search && typeof search === "string") {
-      whereCondition = {
-        name: {
-          $regex: search,
-          $options: "i",
-        },
-      };
-    }
-
     [products, totalCount] = await Promise.all([
       db.product.findMany({
-        where: whereCondition,
+        where: search ? {
+          name: {
+            contains: search as string,
+            mode: "insensitive",
+          }
+        } : undefined,
         take: limit,
         skip: skip,
       }),
