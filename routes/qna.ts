@@ -1,64 +1,62 @@
 import { Router } from "express";
-import fs from "fs";
-import path from "path";
 import db from "../utils/db";
 
 const router = Router();
 
-router.get("/flow", async (req, res) => {
+router.get("/get-flow", async (req, res) => {
   try {
-    const filePath = path.join(__dirname, "../qna.json");
-    const data = fs.readFileSync(filePath, "utf-8");
-    const flow = JSON.parse(data);
-    res.status(200).json(flow);
-  } catch (error) {
-    res.status(500).json({ error: "Failed to load chat flow" });
-  }
-});
+    const flow = await db.qnaFlow.findFirst();
 
-router.post("/submit", async (req, res) => {
-  try {
-    const {
-      mobileNumber,
-      name,
-      serviceType,
-      guestCount,
-      foodType,
-      extraServices,
-      eventLocation,
-      customService,
-      helpRequest,
-    } = req.body;
-
-    // Validate required fields
-    if (!mobileNumber || !name || !serviceType) {
-      return res.status(400).json({ error: "Missing required fields" });
+    if (!flow) {
+      res.status(404).json({ message: "No flow found" });
+    } else {
+      res.status(200).json({ data: flow });
     }
-
-    // Create a new QnA entry
-    const newQnA = {
-      mobileNumber,
-      name,
-      serviceType,
-      guestCount,
-      foodType,
-      extraServices,
-      eventLocation,
-      customService,
-      helpRequest,
-    };
-
-    // Here you would typically save the newQnA to the database
-    // For example, using Prisma:
-    const savedQnA = await db.qnA.create({
-      data: newQnA,
-    });
-
-    // Return a success response
-    res.status(201).json({ message: "Form submitted successfully", data: savedQnA });
   } catch (error) {
-    res.status(500).json({ error: "Failed to submit form" });
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "[Internal server error] could not get the flow" });
   }
 });
+
+router.post("/set-flow", async (req, res) => {
+  const { flow } = req.body;
+
+  // get the id of the first flow
+  try {
+    const firstFlow = await db.qnaFlow.findFirst();
+
+    if (!firstFlow) {
+      await db.qnaFlow.create({
+        data: {
+          flow,
+        },
+      });
+    } else {
+      await db.qnaFlow.update({
+        where: {
+          id: firstFlow.id,
+        },
+        data: {
+          flow,
+        },
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "[Internal server error] could not update the flow" });
+  }
+});
+
+// for users to get the chat flow
+
+// for users to upload the full conversation with the client
+
+// for admins to get the conversations
+
+// for admins to update the status and notes assigned to a conversation
 
 export default router;
