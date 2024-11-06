@@ -35,6 +35,14 @@ enum ActivityType {
   ACTIVITY_8
 }
 
+enum QnaFlowStatus {
+  NEW
+  REJECTED
+  ACCEPTED
+  WORKING
+  COMPLETED
+}
+
 model Notification {
   id                 String             @id @default(auto()) @map("_id") @db.ObjectId
   userId             String             @unique
@@ -63,13 +71,13 @@ model QnaFlow {
 }
 
 model QnaFlowResponse {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String        @id @default(auto()) @map("_id") @db.ObjectId
   userid    String
   response  Json
-  status    String
+  status    QnaFlowStatus
   notes     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
 }
 
 model Product {
