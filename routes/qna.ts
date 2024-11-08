@@ -44,6 +44,8 @@ router.post("/set-flow", async (req, res) => {
         },
       });
     }
+
+    res.status(200).json({ message: "Flow updated successfully" });
   } catch (error) {
     console.error("error updating the flow", error);
     res
@@ -124,6 +126,7 @@ router.get("/get-conversations", async (req, res) => {
 // for admins to update the status and notes assigned to a conversation
 router.post("/update-conversation", async (req, res) => {
   const { conversationId, status, notes } = req.body;
+
 
   // checking if status is in the type of qnaFlowStatus
   if (

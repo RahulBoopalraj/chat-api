@@ -46,8 +46,10 @@ enum QnaFlowStatus {
 model Notification {
   id                 String             @id @default(auto()) @map("_id") @db.ObjectId
   userId             String             @unique
+  userName           String?
   status             NotificationStatus
   additional_message String?
+  notificationSentAt DateTime?
   createdAt          DateTime           @default(now())
   updatedAt          DateTime           @updatedAt
 }
@@ -72,7 +74,8 @@ model QnaFlow {
 
 model QnaFlowResponse {
   id        String        @id @default(auto()) @map("_id") @db.ObjectId
-  userid    String
+  userid    String?
+  userName  String?
   response  Json
   status    QnaFlowStatus
   notes     String?
