@@ -8,6 +8,7 @@ import notification_router from "./routes/notification";
 import user_activity_router from "./routes/user-activity";
 import search_router from "./routes/search";
 import tags_router from "./routes/tags";
+import notification_content_router from "./routes/notificationContent";
 
 const app = express();
 const port = 3000;
@@ -33,6 +34,7 @@ app.use("/notification", notification_router);
 app.use("/user-activity", user_activity_router);
 app.use("/search", search_router);
 app.use("/tags", tags_router);
+app.use("/notification-content", notification_content_router);
 
 app.listen(port, () => {
   console.log(`Chatbot API is running on http://localhost:${port}`);

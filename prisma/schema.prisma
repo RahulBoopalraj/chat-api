@@ -14,15 +14,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum NotificationStatus {
-  WEBSITE_VISITED
-  USER_LOGGED_IN
-  USER_LOGGED_OUT
-  ITEM_ADDED_TO_CART
-  ITEM_REMOVED_FROM_CART
-  ITEM_PURCHASED
-}
-
 enum ActivityType {
   NO_ACTIVITY
   ACTIVITY_1
@@ -43,15 +34,27 @@ enum QnaFlowStatus {
   COMPLETED
 }
 
+model NotificationContent {
+  id           String         @id @default(auto()) @map("_id") @db.ObjectId
+  key          String
+  title        String
+  message      String
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  Notification Notification[]
+}
+
 model Notification {
-  id                 String             @id @default(auto()) @map("_id") @db.ObjectId
-  userId             String             @unique
-  userName           String?
-  status             NotificationStatus
-  additional_message String?
-  notificationSentAt DateTime?
-  createdAt          DateTime           @default(now())
-  updatedAt          DateTime           @updatedAt
+  id                    String              @id @default(auto()) @map("_id") @db.ObjectId
+  userId                String              @unique
+  userName              String?
+  status                NotificationContent @relation(fields: [notificationContentId], references: [id])
+  additional_message    String?
+  notificationSentAt    DateTime?
+  fcmToken              String?
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
+  notificationContentId String              @db.ObjectId
 }
 
 model UserActivity {
