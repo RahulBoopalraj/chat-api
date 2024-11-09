@@ -52,6 +52,9 @@ router.post("/update", async (req, res) => {
         additional_message: additionalMessage,
         status: { connect: { id: notificationStatusRecord.id } },
       },
+      include: {
+        status: true,
+      }
     });
 
     res.status(201).json({
@@ -108,6 +111,9 @@ router.get("/query", async (req, res) => {
         : {},
       take: limit ? parseInt(limit as string) : undefined,
       skip: skip ? parseInt(skip as string) : undefined,
+      include: {
+        status: true,
+      }
     });
 
     return res.status(200).json(notifications);
