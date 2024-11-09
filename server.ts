@@ -9,6 +9,8 @@ import user_activity_router from "./routes/user-activity";
 import search_router from "./routes/search";
 import tags_router from "./routes/tags";
 import notification_content_router from "./routes/notificationContent";
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
 const port = 3000;
