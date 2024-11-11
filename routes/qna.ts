@@ -58,14 +58,42 @@ router.post("/set-flow", async (req, res) => {
 router.post("/upload-conversation", async (req, res) => {
   const { conversation, userId } = req.body;
 
+  if (!conversation || !userId) {
+    res.status(400).json({
+      message: "Invalid request: conversation and userId are required",
+    });
+  }
+
+  // checking if the conversation is in the type of string and if it is parsable to JSON
+  if (typeof conversation !== "string") {
+    res.status(400).json({
+      message: "Invalid conversation value: conversation has to be a JSON String",
+    });
+    return;
+  }
+
+  let parsedConversation;
+
+  try {
+    parsedConversation = JSON.parse(conversation);
+  } catch (error) {
+    res.status(400).json({
+      message: "Invalid conversation value: conversation has to be a valid JSON String",
+    });
+    return
+  }
+
+
   try {
     await db.qnaFlowResponse.create({
       data: {
         userid: userId,
-        response: conversation,
+        response: parsedConversation,
         status: QnaFlowStatus.NEW,
       },
     });
+
+    res.status(200).json({ message: "Conversation uploaded successfully" });
   } catch (error) {
     console.error("error uploading the conversation", error);
     res.status(500).json({
