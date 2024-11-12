@@ -24,6 +24,24 @@ router.get("/get-flow", async (req, res) => {
 router.post("/set-flow", async (req, res) => {
   const { flow } = req.body;
 
+  if(!flow) {
+    res.status(400).json({
+      message: "Invalid request: flow is required", 
+    });
+  }
+
+  let parsedFlow;
+
+  try {
+    parsedFlow = JSON.parse(flow);
+  } catch (error) {
+    res.status(400).json({
+      message: "Invalid flow value: flow has to be a valid JSON String",
+    });
+    return
+  }
+
+
   // get the id of the first flow
   try {
     const firstFlow = await db.qnaFlow.findFirst();
@@ -31,7 +49,7 @@ router.post("/set-flow", async (req, res) => {
     if (!firstFlow) {
       await db.qnaFlow.create({
         data: {
-          flow,
+          flow: parsedFlow,
         },
       });
     } else {
@@ -40,7 +58,7 @@ router.post("/set-flow", async (req, res) => {
           id: firstFlow.id,
         },
         data: {
-          flow,
+          flow: parsedFlow,
         },
       });
     }
