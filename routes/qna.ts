@@ -74,7 +74,7 @@ router.post("/set-flow", async (req, res) => {
 
 // for users to upload the full conversation with the client
 router.post("/upload-conversation", async (req, res) => {
-  const { conversation, userId } = req.body;
+  const { conversation, userId, userName, userEmail, phoneNumber } = req.body;
 
   if (!conversation || !userId) {
     res.status(400).json({
@@ -103,12 +103,34 @@ router.post("/upload-conversation", async (req, res) => {
 
 
   try {
+
+    let createJson: {
+      userid: any;
+      response: any;
+      status: QnaFlowStatus;
+      userName?: string;
+      userEmail?: string;
+      phoneNumber?: string; // Add phoneNumber to the type
+    }  = {
+      userid: userId,
+      response: parsedConversation,
+      status: QnaFlowStatus.NEW,
+    }
+
+    if(typeof userName == 'string') {
+      createJson.userName = userName;
+    }
+
+    if(typeof userEmail == 'string') {
+      createJson.userEmail = userEmail;
+    }
+
+    if(typeof phoneNumber == 'string') {
+      createJson.phoneNumber = phoneNumber;
+    }
+
     await db.qnaFlowResponse.create({
-      data: {
-        userid: userId,
-        response: parsedConversation,
-        status: QnaFlowStatus.NEW,
-      },
+      data: createJson
     });
 
     res.status(200).json({ message: "Conversation uploaded successfully" });

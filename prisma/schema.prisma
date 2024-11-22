@@ -76,14 +76,16 @@ model QnaFlow {
 }
 
 model QnaFlowResponse {
-  id        String        @id @default(auto()) @map("_id") @db.ObjectId
-  userid    String?
-  userName  String?
-  response  Json
-  status    QnaFlowStatus
-  notes     String?
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  userid      String?
+  userName    String?
+  userEmail   String?
+  phoneNumber String?
+  response    Json
+  status      QnaFlowStatus
+  notes       String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 }
 
 model Product {
