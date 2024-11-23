@@ -38,6 +38,7 @@ model NotificationContent {
   id           String         @id @default(auto()) @map("_id") @db.ObjectId
   key          String
   title        String
+  image        String?
   message      String
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt

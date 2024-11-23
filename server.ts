@@ -9,6 +9,7 @@ import user_activity_router from "./routes/user-activity";
 import search_router from "./routes/search";
 import tags_router from "./routes/tags";
 import notification_content_router from "./routes/notificationContent";
+import upload_file from "./routes/fileupload"
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -31,6 +32,7 @@ app.use(express.json()); // Body parser, reading data from body into req.body
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
+app.use("/fileupload", upload_file)
 app.use("/qna", qna_router);
 app.use("/notification", notification_router);
 app.use("/user-activity", user_activity_router);

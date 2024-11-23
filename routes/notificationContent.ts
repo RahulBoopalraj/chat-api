@@ -14,7 +14,7 @@ router.get("/fetch", async (req, res) => {
 });
 
 router.post("/update", async (req, res) => {
-    const { notificationId, notificationKey, notificationTitle, notificationMessage } = req.body;
+    const { notificationId, notificationKey, notificationTitle, notificationMessage, notificationImage } = req.body;
 
     if (!notificationId || typeof notificationId !== "string") {
         return res.status(400).json({ error: "Invalid or missing notificationId" });
@@ -29,6 +29,10 @@ router.post("/update", async (req, res) => {
     }
     if (notificationMessage && typeof notificationMessage === "string") {
         updateData.message = notificationMessage;
+    }
+
+    if(notificationImage && typeof notificationImage === "string") {
+        updateData.image = notificationImage;
     }
 
     if (Object.keys(updateData).length === 0) {
@@ -54,7 +58,8 @@ router.post("/update", async (req, res) => {
 });
 
 router.post("/create", async (req, res) => {
-    const { notificationKey, notificationTitle, notificationMessage } = req.body;
+    const { notificationKey, notificationTitle, notificationMessage, notificationImage } = req.body;
+
 
     if (!notificationKey || typeof notificationKey !== "string") {
         return res.status(400).json({ error: "Invalid or missing notificationKey" });
@@ -68,12 +73,17 @@ router.post("/create", async (req, res) => {
         return res.status(400).json({ error: "Invalid or missing notificationMesage" });
     }
 
+    if (notificationImage && typeof notificationImage !== "string") {
+        return res.status(400).json({ error: "Invalid notificationImage" });
+    }
+
     try {
         const notification = await db.notificationContent.create({
             data: {
                 key: notificationKey,
                 title: notificationTitle,
                 message: notificationMessage,
+                image: notificationImage || null, // Include notificationImage if present
             },
         });
 
